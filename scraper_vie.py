@@ -402,7 +402,7 @@ def scraper_offres_vie():
                 entreprise = entreprise_el.inner_text().strip() if entreprise_el else 'N/A'
 
                 lieu_el = content_el.query_selector('h2.location') or content_el.query_selector('.location') or el.query_selector('.location')
-                lieu = lieu_el.inner_text().strip() if lieu_el else 'N/A'
+                lieu = lieu_el.text_content().strip() if lieu_el else 'N/A'
 
                 mission_el = content_el.query_selector('h4.mission-excerpt')
                 mission = mission_el.inner_text().strip() if mission_el else ''
