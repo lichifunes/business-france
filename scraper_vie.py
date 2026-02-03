@@ -13,6 +13,8 @@ from datetime import datetime
 import time
 import sqlite3
 import os
+import html
+from ai_sorter import trier_offres_ia
 
 # ============================================
 # CONFIGURATION
@@ -398,7 +400,7 @@ def scraper_offres_vie():
                 titre_el = content_el.query_selector('h2.mission-title') or content_el.query_selector('h2:not(.location)') or el.query_selector('h2')
                 titre = titre_el.inner_text().strip() if titre_el else 'N/A'
 
-                entreprise_el = content_el.query_selector('h3.organization') or el.query_selector('h3.organization')
+                entreprise_el = content_el.query_selector('h3.organization-name') or el.query_selector('h3.organization-name')
                 entreprise = entreprise_el.inner_text().strip() if entreprise_el else 'N/A'
 
                 lieu_el = content_el.query_selector('h2.location') or content_el.query_selector('.location') or el.query_selector('.location')
@@ -467,13 +469,82 @@ def envoyer_email(offres):
     print(f"📧 Envoi email ({len(offres)} offres)...")
 
     def _format_offre_html(offre, index):
-        mission = f"<br><strong>📝</strong> {offre['mission']}" if offre.get('mission') else ''
-        meta = f"<br><strong>ℹ️</strong> {offre['meta']}" if offre.get('meta') else ''
+        def _esc(value: str) -> str:
+            return html.escape(value or '')
+
+        titre = _esc(offre.get('titre', ''))
+        entreprise = _esc(offre.get('entreprise', ''))
+        lieu = _esc(offre.get('lieu', ''))
+        mission_text = (offre.get('mission') or '').strip()
+        meta_text = (offre.get('meta') or '').strip()
+        
+        mission_html = _esc(mission_text).replace('\n', '<br>')
+        
+        # Tags (badges) pour les métadonnées
+        tags_html = ""
+        if meta_text:
+            tags = [t.strip() for t in meta_text.split('|')]
+            for tag in tags:
+                if tag:
+                    tags_html += (
+                        f'<span style="display:inline-block;background:#f1f5f9;color:#475569;'
+                        f'padding:4px 10px;border-radius:12px;font-size:11px;font-weight:600;'
+                        f'margin-right:6px;margin-bottom:6px;">{_esc(tag)}</span>'
+                    )
+
+        # Badge IA Score si présent
+        score_html = ""
+        if 'score_ia' in offre:
+             score_html = (
+                 f'<span style="background:#dcfce7;color:#166534;padding:4px 8px;border-radius:4px;'
+                 f'font-size:11px;font-weight:700;text-transform:uppercase;float:right;">'
+                 f'🤖 {offre["score_ia"]}</span>'
+             )
+
         return (
-            f"<div style=\"margin:20px 0;padding:20px;background:white;border-left:4px solid #667eea;border-radius:8px;\">"
-            f"<h3 style=\"color:#667eea;margin:0;\">{index}. {offre['titre']}</h3>"
-            f"<p><strong>🏢</strong> {offre['entreprise']}<br>"
-            f"<strong>📍</strong> {offre['lieu']}{mission}{meta}</p></div>"
+            f"""
+            <div style="margin-bottom:24px;background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.03);">
+                <!-- Accent Coloré -->
+                <div style="height:6px;background:linear-gradient(90deg, #6366f1, #8b5cf6);"></div>
+                
+                <div style="padding:24px;">
+                    <!-- Header: Index + Score -->
+                    <div style="margin-bottom:12px;overflow:hidden;">
+                        <span style="font-size:11px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:0.05em;background:#eef2ff;padding:4px 8px;border-radius:4px;">
+                            OFFRE #{index}
+                        </span>
+                        {score_html}
+                    </div>
+                    
+                    <!-- Titre -->
+                    <h2 style="margin:0 0 8px 0;font-size:20px;font-weight:800;color:#1e293b;line-height:1.3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+                        {titre}
+                    </h2>
+
+                    <!-- Entreprise & Lieu -->
+                    <div style="margin-bottom:20px;font-size:14px;color:#64748b;">
+                        <strong style="color:#334155;">🏢 {entreprise}</strong>
+                        <span style="color:#cbd5e1;margin:0 8px;">&bull;</span>
+                        <span>📍 {lieu}</span>
+                    </div>
+
+                    <!-- Bloc Mission -->
+                    <div style="background:#f8fafc;border:1px solid #f1f5f9;border-radius:8px;padding:16px;margin-bottom:16px;">
+                        <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;letter-spacing:0.05em;">
+                            Mission
+                        </div>
+                        <div style="color:#334155;font-size:14px;line-height:1.6;">
+                            {mission_html}
+                        </div>
+                    </div>
+
+                    <!-- Tags / Meta -->
+                    <div style="display:flex;flex-wrap:wrap;">
+                        {tags_html}
+                    </div>
+                </div>
+            </div>
+            """
         )
 
     items_html = ''.join(_format_offre_html(o, i + 1) for i, o in enumerate(offres))
@@ -533,7 +604,11 @@ if __name__ == "__main__":
     offres = scraper_offres_vie()
     offres_filtrees = filtrer_offres(offres)
     nouvelles = filtrer_nouvelles_offres(offres_filtrees)
-    envoyer_email(nouvelles)
+    
+    # Tri intelligent si activé
+    nouvelles_triees = trier_offres_ia(nouvelles)
+    
+    envoyer_email(nouvelles_triees)
     
     print(f"📊 Base APRÈS : {get_stats()} offres")
     affiche_bdd_sample()
