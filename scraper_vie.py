@@ -8,6 +8,7 @@ Détection doublons sur titre + entreprise + lieu
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.utils import formataddr
 from playwright.sync_api import sync_playwright
 from datetime import datetime
 import time
@@ -254,6 +255,7 @@ def _env(name, default):
 
 EMAIL_CONFIG = {
     'from': _env('EMAIL_FROM', 'loicjiraud@gmail.com'),
+    'sender_name': _env('EMAIL_SENDER_NAME', 'Scraper VIE'),
     'to': _env('EMAIL_TO', 'loicjiraud@gmail.com'),
     'password': os.getenv('EMAIL_PASSWORD', ''),
     'smtp_server': _env('SMTP_SERVER', 'smtp.gmail.com'),
@@ -574,7 +576,7 @@ def envoyer_email(offres):
     
     msg = MIMEMultipart('alternative')
     msg['Subject'] = f"🎯 {len(offres)} nouvelle(s) offre(s) VIE - {datetime.now().strftime('%d/%m/%Y')}"
-    msg['From'] = EMAIL_CONFIG['from']
+    msg['From'] = formataddr((EMAIL_CONFIG['sender_name'], EMAIL_CONFIG['from']))
     msg['To'] = EMAIL_CONFIG['to']
     msg.attach(MIMEText(html, 'html'))
     
