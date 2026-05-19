@@ -247,6 +247,23 @@ CRITERES = {
     ]
 }
 
+# Pays / villes Asie pour le filtre géographique
+PAYS_ASIE = [
+    'japon', 'japan', 'tokyo', 'osaka',
+    'singapour', 'singapore',
+    'corée', 'coree', 'korea', 'séoul', 'seoul',
+    'chine', 'china', 'shanghai', 'pékin', 'pekin', 'beijing', 'shenzhen', 'hong kong', 'hongkong',
+    'taïwan', 'taiwan', 'taipei',
+    'thaïlande', 'thailande', 'thailand', 'bangkok',
+    'vietnam', 'viêt nam', 'hô chi minh', 'ho chi minh', 'hanoi', 'hanoï',
+    'malaisie', 'malaysia', 'kuala lumpur',
+    'indonésie', 'indonesie', 'indonesia', 'jakarta',
+    'philippines', 'manille', 'manila',
+    'inde', 'india', 'mumbai', 'new delhi', 'bangalore', 'bengaluru',
+    'cambodge', 'cambodia', 'phnom penh',
+    'myanmar', 'birmanie',
+]
+
 
 def _env(name, default):
     value = os.getenv(name)
@@ -397,6 +414,16 @@ def scraper_offres_vie():
         offres = []
         for el in elements:
             try:
+                # Extraire l'URL de l'offre
+                link_el = el.query_selector('a[href]')
+                url = ''
+                if link_el:
+                    href = link_el.get_attribute('href') or ''
+                    if href.startswith('/'):
+                        url = f'https://mon-vie-via.businessfrance.fr{href}'
+                    elif href.startswith('http'):
+                        url = href
+
                 content_el = el.query_selector('figcaption.offer-content') or el
 
                 titre_el = content_el.query_selector('h2.mission-title') or content_el.query_selector('h2:not(.location)') or el.query_selector('h2')
@@ -425,6 +452,7 @@ def scraper_offres_vie():
                     'lieu': lieu,
                     'mission': mission,
                     'meta': meta,
+                    'url': url,
                     'date': datetime.now().strftime('%Y-%m-%d')
                 })
             except:
@@ -439,11 +467,17 @@ def filtrer_offres(offres):
     filtrees = []
     
     for offre in offres:
-        if any(kw in offre['titre'].lower() for kw in CRITERES['keywords']):
+        lieu_lower = offre['lieu'].lower()
+        est_en_asie = any(pays in lieu_lower for pays in PAYS_ASIE)
+        match_keyword = any(kw in offre['titre'].lower() for kw in CRITERES['keywords'])
+        
+        if match_keyword and est_en_asie:
             filtrees.append(offre)
-            print(f"✅ {offre['titre'][:60]} | {offre['entreprise'][:30]}")
+            print(f"✅ {offre['titre'][:50]} | {offre['entreprise'][:25]} | 📍 {offre['lieu']}")
+        elif match_keyword:
+            print(f"⏭️ [hors Asie] {offre['titre'][:50]} | 📍 {offre['lieu']}")
     
-    print(f"\n📊 {len(filtrees)} matchent\n")
+    print(f"\n📊 {len(filtrees)} matchent (Asie uniquement)\n")
     return filtrees
 
 
@@ -529,6 +563,7 @@ def envoyer_email(offres):
                         </td></tr>
                     </table>
                     <div>{tags_html}</div>
+                    {'<table cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;"><tr><td style="background:#6366f1;padding:10px 20px;"><a href="' + html.escape(offre.get("url", "")) + '" style="color:#ffffff;text-decoration:none;font-size:13px;font-weight:700;font-family:Arial,sans-serif;">Voir l\x27offre →</a></td></tr></table>' if offre.get('url') else ''}
                 </td></tr>
             </table>
             """
