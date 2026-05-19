@@ -15,6 +15,7 @@ import time
 import sqlite3
 import os
 import html
+import re
 from ai_sorter import trier_offres_ia
 
 # ============================================
@@ -25,225 +26,51 @@ DB_FILE = 'offres_vie.db'
 
 CRITERES = {
     'keywords': [
-        # DATA
-        'data', 'données', 'donnée', 'database', 'bd', 'base de données',
-        'big data', 'données massives', 'data mining', 'exploration de données',
+        # ===== DEVOPS / SRE / PLATFORM =====
+        'devops', 'dev ops', 'sre', 'site reliability',
+        'platform engineer', 'ingénieur plateforme',
+        'infrastructure engineer', 'ingénieur infrastructure',
+        'cloud engineer', 'ingénieur cloud',
+        'ci/cd', 'cicd', 'continuous integration', 'continuous delivery',
+        'kubernetes', 'docker', 'terraform', 'ansible', 'helm',
+        'argocd', 'fluxcd', 'gitops', 'jenkins', 'gitlab ci',
+        'github actions',
         
-        # ENGINEER
-        'engineer', 'ingénieur', 'ingenieur', 'ing', 'engineering', 'ingénierie',
-        'software engineer', 'ingénieur logiciel', 'systems engineer',
+        # ===== CLOUD =====
+        'cloud', 'aws', 'azure', 'gcp', 'google cloud',
+        'cloud computing', 'cloud native', 'microservices',
         
-        # DEVELOPER / DEV
-        'developer', 'développeur', 'developpeur', 'dev', 'programmeur', 'programmer',
-        'coder', 'codeur', 'software developer', 'application developer',
+        # ===== MONITORING / OBSERVABILITÉ =====
+        'monitoring', 'observability', 'observabilité',
+        'prometheus', 'grafana', 'datadog', 'elk',
+        'logging', 'alerting',
         
-        # DATA ROLES
-        'data engineer', 'ingénieur données', 'ingénieur data', 'data scientist',
-        'data analyst', 'analyste données', 'analyste data', 'data architect',
-        'architecte données', 'data platform engineer', 'etl developer',
-        'etl engineer', 'data integration', 'intégration données',
+        # ===== DATA ENGINEERING =====
+        'data engineer', 'ingénieur data', 'data scientist',
+        'data analyst', 'data architect', 'data platform',
+        'etl', 'data pipeline', 'data warehouse', 'data lake',
+        'mlops', 'machine learning', 'big data',
         
-        # ANALYST
-        'analyst', 'analyste', 'analytics', 'analytique', 'business analyst',
-        'analyste métier', 'analyste business', 'functional analyst',
-        'analyste fonctionnel', 'systems analyst', 'analyste système',
-        'financial analyst', 'analyste financier', 'reporting analyst',
-        'insights analyst', 'operations analyst', 'process analyst',
+        # ===== DÉVELOPPEMENT =====
+        'developer', 'développeur', 'developpeur',
+        'software engineer', 'ingénieur logiciel',
+        'backend', 'back-end', 'fullstack', 'full stack',
+        'python', 'golang',
         
-        # SCIENTIST
-        'scientist', 'scientifique', 'data scientist', 'research scientist',
-        'chercheur', 'applied scientist', 'science des données',
+        # ===== SYSTÈMES & RÉSEAU =====
+        'systems engineer', 'ingénieur système',
+        'linux', 'network engineer', 'ingénieur réseau',
+        'automation', 'automatisation',
         
-        # BI & REPORTING
-        'business intelligence', 'bi', 'intelligence économique',
-        'bi developer', 'bi analyst', 'reporting', 'visualisation',
-        'data visualization', 'dataviz', 'data viz', 'tableau', 'power bi',
+        # ===== SÉCURITÉ =====
+        'cybersecurity', 'cybersécurité', 'security engineer',
+        'devsecops', 'soc', 'pentester',
         
-        # MACHINE LEARNING / AI
-        'machine learning', 'ml', 'apprentissage automatique',
-        'ml engineer', 'mlops', 'ai', 'ia', 'artificial intelligence',
-        'intelligence artificielle', 'deep learning', 'apprentissage profond',
-        'nlp', 'natural language processing', 'traitement du langage',
-        'computer vision', 'vision par ordinateur', 'neural network',
-        
-        # ARCHITECTURE
-        'architect', 'architecte', 'solution architect', 'architecte solutions',
-        'enterprise architect', 'cloud architect', 'architecte cloud',
-        'technical architect', 'architecte technique',
-        
-        # DEVOPS / SRE
-        'devops', 'dev ops', 'sre', 'site reliability', 'infrastructure',
-        'platform engineer', 'ingénieur plateforme', 'automation',
-        'automatisation', 'ci/cd', 'continuous integration',
-        
-        # BACKEND / FULLSTACK
-        'backend', 'back-end', 'backend developer', 'développeur backend',
-        'fullstack', 'full stack', 'full-stack', 'développeur fullstack',
-        'fullstack developer', 'full stack developer',
-        
-        # LANGAGES PROGRAMMATION
-        'python', 'java', 'javascript', 'c++', 'cpp', 'c#', 'csharp',
-        'sql', 'nosql', 'cobol', 'scala', 'r', 'go', 'golang',
-        'typescript', 'php', 'ruby', '.net', 'dotnet',
-        
-        # CLOUD / INFRA
-        'cloud', 'aws', 'azure', 'gcp', 'google cloud', 'cloud computing',
-        'kubernetes', 'docker', 'container', 'microservices', 'api',
-        
-        # DATA STORAGE
-        'data warehouse', 'entrepôt de données', 'data lake', 'lac de données',
-        'data platform', 'plateforme données', 'etl', 'elt', 'data hub',
-        'data mart', 'datalake', 'datawarehouse',
-        
-        # TESTING / QA
-        'testing', 'test', 'qa', 'quality assurance', 'qualité',
-        'tester', 'testeur', 'test engineer', 'ingénieur test',
-        'automation testing', 'test automation', 'qa engineer',
-        
-        # PRODUCT / MANAGEMENT
-        'product', 'produit', 'product manager', 'chef de produit',
-        'product owner', 'po', 'project manager', 'chef de projet',
-        'scrum master', 'agile', 'technical lead', 'tech lead',
-        
-        # TECH GENERAL
-        'tech', 'technology', 'technologie', 'it', 'informatique',
-        'software', 'logiciel', 'application', 'system', 'système',
-        'digital', 'numérique', 'innovation', 'transformation digitale',
-        
-        # BUSINESS / MANAGEMENT
-        'business', 'métier', 'consultant', 'consulting', 'conseil',
-        'strategy', 'stratégie', 'technical', 'technique', 'support',
-        'specialist', 'spécialiste', 'expert', 'coordinator', 'coordinateur',
-        
-        # QUANT / FINANCE
-        'quant', 'quantitative', 'quantitative analyst', 'quant developer',
-        'quantitative researcher', 'financial engineer', 'ingénieur financier',
-        'risk', 'risque', 'risk analyst', 'trading', 'trader',
-        
-        # DATA GOVERNANCE / MANAGEMENT
-        'data governance', 'gouvernance données', 'data quality',
-        'qualité données', 'data management', 'gestion données',
-        'master data', 'mdm', 'metadata', 'métadonnées',
-        
-        # WEB / FRONTEND 
-        'web', 'frontend', 'front-end', 'ux', 'ui', 'interface',
-        'react', 'angular', 'vue', 'javascript developer',
-
-        
-        # ============================================
-        # FINANCE / BANCAIRE
-
-        # ASSET MANAGEMENT
-        'asset', 'asset management', 'gestion d\'actifs', 'gestion actifs',
-        'portfolio', 'portefeuille', 'fund', 'funds', 'fonds',
-        'etf', 'mutual fund', 'opcvm', 'sicav', 'fcp',
-        'hedge fund', 'private equity', 'investment', 'investissement',
-        'wealth management', 'gestion de patrimoine',
-        
-        # TRADING / MARKETS
-        'trading', 'trader', 'market', 'marché', 'marchés',
-        'equity', 'equities', 'actions', 'fixed income', 'obligataire',
-        'derivatives', 'dérivés', 'options', 'futures', 'swaps',
-        'forex', 'fx', 'commodities', 'matières premières',
-        'crypto', 'cryptocurrency', 'blockchain', 'bitcoin',
-        
-        # FRONT OFFICE
-        'front office', 'sales', 'trading desk', 'desk',
-        'execution', 'exécution', 'order management', 'oms',
-        'trade', 'transaction', 'deal', 'booking',
-        
-        # MIDDLE OFFICE
-        'middle office', 'control', 'contrôle', 'reconciliation',
-        'rapprochement', 'settlement', 'règlement-livraison',
-        'collateral', 'collatéral', 'margin', 'marge',
-        
-        # RISK MANAGEMENT
-        'risk', 'risque', 'var', 'value at risk', 'credit risk',
-        'risque de crédit', 'market risk', 'risque de marché',
-        'operational risk', 'risque opérationnel', 'stress test',
-        'compliance', 'conformité', 'regulatory', 'réglementaire',
-        
-        # QUANT / ALGO TRADING
-        'quant', 'quantitative', 'quantitative analyst',
-        'algo', 'algorithmic', 'algorithmique', 'algo trading',
-        'high frequency', 'hft', 'market making', 'arbitrage',
-        'pricing', 'pricer', 'valorisation', 'valuation',
-        
-        # FINTECH / TRADING SYSTEMS
-        'fintech', 'trading system', 'système de trading',
-        'trading platform', 'plateforme de trading',
-        'market data', 'données de marché', 'real-time', 'temps réel',
-        'low latency', 'faible latence', 'performance',
-        
-        # IT BANCAIRE / FINANCE
-        'banking', 'banque', 'bank', 'financial', 'financier',
-        'finance it', 'it finance', 'financial services',
-        'services financiers', 'capital markets', 'marchés de capitaux',
-        'investment banking', 'banque d\'investissement',
-        
-        # SYSTÈMES & APPLICATIONS
-        'murex', 'summit', 'calypso', 'sophis', 'reuters',
-        'bloomberg', 'refinitiv', 'simcorp', 'aladdin',
-        'front arena', 'kondor', 'kondor+', 'wall street',
-        
-        # RÉGULATION / REPORTING
-        'mifid', 'basel', 'bâle', 'emir', 'dodd-frank',
-        'regulatory reporting', 'reporting réglementaire',
-        'solvency', 'solvabilité', 'capital', 'liquidity',
-        
-        # INSTRUMENTS FINANCIERS
-        'bond', 'obligation', 'stock', 'action', 'share',
-        'warrant', 'certificate', 'structured product',
-        'produit structuré', 'exotic', 'vanilla',
-        
-        # OPERATIONS / POST-TRADE
-        'operations', 'opérations', 'post-trade', 'post-marché',
-        'clearing', 'compensation', 'custody', 'conservation',
-        'back office', 'corporate actions', 'événements',
-        
-        # TREASURY / CASH
-        'treasury', 'trésorerie', 'cash management', 'gestion de trésorerie',
-        'liquidity', 'liquidité', 'funding', 'financement',
-        'payment', 'paiement', 'swift', 'sepa',
-        
-        # ASSET SERVICING
-        'transfer agent', 'agent de transfert', 'nav', 'valeur liquidative',
-        'unit', 'part', 'subscription', 'souscription',
-        'redemption', 'rachat', 'distribution', 'dividend',
-        
-        # PERFORMANCE / ANALYTICS
-        'performance', 'attribution', 'benchmark', 'indice',
-        'tracking', 'suivi', 'monitoring', 'surveillance',
-        'dashboard', 'tableau de bord', 'kpi', 'reporting',
-        
-        # SECURITIES / INSTRUMENTS
-        'securities', 'titres', 'financial instrument',
-        'instrument financier', 'asset class', 'classe d\'actifs',
-        'alternative', 'alternatif', 'real estate', 'immobilier',
-        
-        # CREDIT / LOANS
-        'credit', 'crédit', 'loan', 'prêt', 'lending',
-        'syndication', 'structured finance', 'finance structurée',
-        'leveraged finance', 'corporate lending',
-        
-        # ESG / SUSTAINABLE
-        'esg', 'sustainable', 'durable', 'green', 'vert',
-        'sri', 'isr', 'responsible investment', 'impact',
-        
-        # CLIENT / DISTRIBUTION
-        'client', 'customer', 'distribution', 'onboarding',
-        'kyc', 'know your customer', 'aml', 'anti money laundering',
-        'blanchiment', 'due diligence',
-        
-        # APPLICATIONS MÉTIER
-        'pms', 'portfolio management system', 'oms', 'order management',
-        'ems', 'execution management', 'rms', 'risk management system',
-        'accounting', 'comptabilité', 'general ledger', 'grand livre',
-        
-        # AUTRES FINANCE/IT
-        'financial data', 'données financières', 'market data feed',
-        'flux de marché', 'tick', 'quote', 'cotation',
-        'book', 'carnet d\'ordres', 'matching engine',
+        # ===== FINANCE IT (ciblé) =====
+        'it finance', 'finance it', 'quant developer',
+        'trading system', 'market data',
+        'murex', 'calypso', 'bloomberg',
+        'fintech',
     ]
 }
 
@@ -462,6 +289,17 @@ def scraper_offres_vie():
         return offres
 
 
+def _match_keywords(text, keywords):
+    """Match par mot entier (word boundary) pour éviter les faux positifs"""
+    text_lower = text.lower()
+    for kw in keywords:
+        # Pour les keywords avec / ou des caractères spéciaux, escape
+        pattern = r'\b' + re.escape(kw) + r'\b'
+        if re.search(pattern, text_lower):
+            return True
+    return False
+
+
 def filtrer_offres(offres):
     print(f"🔍 Filtrage de {len(offres)} offres...\n")
     filtrees = []
@@ -469,7 +307,9 @@ def filtrer_offres(offres):
     for offre in offres:
         lieu_lower = offre['lieu'].lower()
         est_en_asie = any(pays in lieu_lower for pays in PAYS_ASIE)
-        match_keyword = any(kw in offre['titre'].lower() for kw in CRITERES['keywords'])
+        # Match sur le titre ET le contenu de la mission
+        texte_complet = offre['titre'] + ' ' + offre.get('mission', '')
+        match_keyword = _match_keywords(texte_complet, CRITERES['keywords'])
         
         if match_keyword and est_en_asie:
             filtrees.append(offre)
@@ -528,13 +368,24 @@ def envoyer_email(offres):
                         f'margin-right:6px;margin-bottom:6px;">{_esc(tag)}</span>'
                     )
 
-        # Badge IA Score si présent
+        # Badge IA Score si présent (score numérique 0-100)
         score_html = ""
         if 'score_ia' in offre:
+             score = offre['score_ia']
+             raison = _esc(offre.get('raison_ia', ''))
+             # Couleur selon le score
+             if score >= 70:
+                 bg, color = '#dcfce7', '#166534'  # vert
+             elif score >= 40:
+                 bg, color = '#fef9c3', '#854d0e'  # jaune
+             else:
+                 bg, color = '#fee2e2', '#991b1b'  # rouge
              score_html = (
                  f'<td style="text-align:right;vertical-align:middle;">'
-                 f'<span style="background:#dcfce7;color:#166534;padding:4px 8px;border-radius:4px;'
-                 f'font-size:11px;font-weight:700;">🤖 {offre["score_ia"]}</span></td>'
+                 f'<span style="background:{bg};color:{color};padding:4px 10px;'
+                 f'font-size:12px;font-weight:700;">🤖 {score}/100</span>'
+                 f'{"<br><span style=&quot;font-size:11px;color:#64748b;&quot;>" + raison + "</span>" if raison else ""}'
+                 f'</td>'
              )
         else:
              score_html = '<td></td>'
