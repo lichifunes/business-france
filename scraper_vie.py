@@ -551,7 +551,7 @@ def envoyer_email(offres):
 
     items_html = ''.join(_format_offre_html(o, i + 1) for i, o in enumerate(offres))
     
-    html = f"""<html>
+    html_body = f"""<html>
     <body style="margin:0;padding:0;background:#eef1f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
         <div style="max-width:860px;margin:32px auto;background:#ffffff;border-radius:16px;box-shadow:0 12px 40px rgba(15,23,42,0.12);overflow:hidden;">
             <div style="background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;padding:28px 32px;">
@@ -578,7 +578,7 @@ def envoyer_email(offres):
     msg['Subject'] = f"🎯 {len(offres)} nouvelle(s) offre(s) VIE - {datetime.now().strftime('%d/%m/%Y')}"
     msg['From'] = formataddr((EMAIL_CONFIG['sender_name'], EMAIL_CONFIG['from']))
     msg['To'] = EMAIL_CONFIG['to']
-    msg.attach(MIMEText(html, 'html'))
+    msg.attach(MIMEText(html_body, 'html'))
     
     try:
         srv = smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port'])
