@@ -580,15 +580,37 @@ def envoyer_email(offres):
     msg['To'] = EMAIL_CONFIG['to']
     msg.attach(MIMEText(html_body, 'html'))
     
+    # Debug config (sans mot de passe)
+    pwd_preview = EMAIL_CONFIG['password'][:3] + '***' if EMAIL_CONFIG['password'] else '(VIDE!)'
+    print(f"[MAIL] From: {EMAIL_CONFIG['from']}")
+    print(f"[MAIL] To: {EMAIL_CONFIG['to']}")
+    print(f"[MAIL] SMTP: {EMAIL_CONFIG['smtp_server']}:{EMAIL_CONFIG['smtp_port']}")
+    print(f"[MAIL] Password: {pwd_preview}")
+    
     try:
-        srv = smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port'])
+        print("[MAIL] Connexion SMTP...")
+        srv = smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port'], timeout=30)
+        srv.ehlo()
+        print("[MAIL] STARTTLS...")
         srv.starttls()
+        srv.ehlo()
+        print("[MAIL] Login...")
         srv.login(EMAIL_CONFIG['from'], EMAIL_CONFIG['password'])
+        print("[MAIL] Envoi...")
         srv.send_message(msg)
         srv.quit()
         print("✅ Email envoyé !\n")
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"❌ Erreur AUTH SMTP : {e}")
+        print("💡 Vérifiez que EMAIL_PASSWORD est un App Password Gmail (16 chars)")
+        print(f"💡 Compte utilisé : {EMAIL_CONFIG['from']}\n")
+    except smtplib.SMTPException as e:
+        print(f"❌ Erreur SMTP : {e}\n")
     except Exception as e:
-        print(f"❌ Erreur : {e}\n")
+        import traceback
+        print(f"❌ Erreur inattendue : {e}")
+        traceback.print_exc()
+        print()
 
 # ============================================
 # MAIN
