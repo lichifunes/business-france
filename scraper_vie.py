@@ -34,43 +34,59 @@ CRITERES = {
         'ci/cd', 'cicd', 'continuous integration', 'continuous delivery',
         'kubernetes', 'docker', 'terraform', 'ansible', 'helm',
         'argocd', 'fluxcd', 'gitops', 'jenkins', 'gitlab ci',
-        'github actions',
+        'github actions', 'container', 'containerisation',
         
         # ===== CLOUD =====
         'cloud', 'aws', 'azure', 'gcp', 'google cloud',
         'cloud computing', 'cloud native', 'microservices',
+        'serverless', 'lambda', 'iaas', 'paas',
         
         # ===== MONITORING / OBSERVABILITÉ =====
         'monitoring', 'observability', 'observabilité',
-        'prometheus', 'grafana', 'datadog', 'elk',
-        'logging', 'alerting',
+        'prometheus', 'grafana', 'datadog', 'elk', 'splunk',
+        'logging', 'alerting', 'nagios', 'zabbix',
         
         # ===== DATA ENGINEERING =====
-        'data engineer', 'ingénieur data', 'data scientist',
-        'data analyst', 'data architect', 'data platform',
-        'etl', 'data pipeline', 'data warehouse', 'data lake',
-        'mlops', 'machine learning', 'big data',
+        'data engineer', 'ingénieur data', 'ingénieur données',
+        'data scientist', 'data analyst', 'data architect',
+        'data platform', 'data pipeline', 'data warehouse', 'data lake',
+        'etl', 'elt', 'mlops', 'machine learning', 'big data',
+        'spark', 'kafka', 'airflow', 'dbt',
         
-        # ===== DÉVELOPPEMENT =====
+        # ===== DÉVELOPPEMENT / INGÉNIERIE =====
         'developer', 'développeur', 'developpeur',
+        'engineer', 'ingénieur', 'ingenieur',
         'software engineer', 'ingénieur logiciel',
-        'backend', 'back-end', 'fullstack', 'full stack',
-        'python', 'golang',
+        'backend', 'back-end', 'fullstack', 'full stack', 'full-stack',
+        'python', 'golang', 'java', 'sql', 'typescript',
+        
+        # ===== ARCHITECTURE =====
+        'architect', 'architecte', 'solution architect',
+        'cloud architect', 'architecte cloud',
+        'technical architect', 'architecte technique',
         
         # ===== SYSTÈMES & RÉSEAU =====
-        'systems engineer', 'ingénieur système',
-        'linux', 'network engineer', 'ingénieur réseau',
-        'automation', 'automatisation',
+        'systems engineer', 'ingénieur système', 'ingénieur systèmes',
+        'system administrator', 'administrateur système',
+        'linux', 'unix', 'network engineer', 'ingénieur réseau',
+        'automation', 'automatisation', 'infrastructure',
+        'réseau', 'network', 'virtualisation', 'vmware',
         
         # ===== SÉCURITÉ =====
         'cybersecurity', 'cybersécurité', 'security engineer',
-        'devsecops', 'soc', 'pentester',
+        'devsecops', 'soc', 'pentester', 'sécurité informatique',
+        'information security', 'sécurité des systèmes',
+        
+        # ===== IT / TECH GENERAL (ciblé) =====
+        'informatique', 'software', 'logiciel',
+        'tech lead', 'technical lead', 'lead technique',
+        'scrum master', 'agile',
         
         # ===== FINANCE IT (ciblé) =====
         'it finance', 'finance it', 'quant developer',
         'trading system', 'market data',
         'murex', 'calypso', 'bloomberg',
-        'fintech',
+        'fintech', 'quantitative',
     ]
 }
 
