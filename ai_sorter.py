@@ -6,36 +6,28 @@ import google.generativeai as genai
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
 PROFIL_CANDIDAT = """
-Je suis un ingénieur DevOps / Cloud / SRE avec une forte appétence pour la Data.
-
-COMPÉTENCES PRINCIPALES :
-- DevOps & SRE : CI/CD (GitLab CI, GitHub Actions, Jenkins), Infrastructure as Code (Terraform, Ansible, Pulumi)
-- Containers & Orchestration : Kubernetes, Docker, Helm, ArgoCD, FluxCD
-- Cloud : AWS, GCP, Azure (certifié ou en cours)
-- Monitoring & Observabilité : Prometheus, Grafana, Datadog, ELK Stack, Loki
-- Scripting & Automation : Python, Bash, Go
-- Data Engineering : pipelines de données, ETL, SQL, Kafka, Spark (niveau intermédiaire)
-- Systèmes : Linux, réseau, sécurité infrastructure
+Je suis docteur en pharmacie (PharmD) à la recherche d'un VIE à Barcelone.
+Je vise des postes en industrie pharmaceutique, biotech, santé ou sciences de
+la vie qui valorisent mon doctorat.
 
 POSTES RECHERCHÉS (par ordre de préférence) :
-1. DevOps Engineer / SRE / Platform Engineer
-2. Cloud Engineer / Infrastructure Engineer
-3. Data Engineer avec composante DevOps/Cloud
-4. MLOps Engineer
-5. IT Finance / DevOps dans la finance de marché
+1. Affaires réglementaires / Regulatory Affairs
+2. Recherche clinique (CRA, clinical research, essais cliniques)
+3. Pharmacovigilance / Drug Safety
+4. R&D / développement pharmaceutique / affaires scientifiques
+5. Affaires médicales (MSL) / Market Access
+6. Assurance qualité (QA/QC, GMP/BPF)
 
 CE QUE J'AIME :
-- Missions avec de la responsabilité technique
-- Environnements Cloud-native et microservices
-- Automatisation et amélioration continue
-- Grandes entreprises ou scale-ups avec de vraies infras
-- Bonne rémunération VIE et grandes villes en Asie
+- Missions scientifiques ou réglementaires avec de la responsabilité
+- Laboratoires pharma / biotech, environnement international
+- Aires thérapeutiques et innovation santé
+- Barcelone
 
 CE QUE JE N'AIME PAS :
-- Support utilisateur / helpdesk / N1-N2
-- Postes purement fonctionnels ou commerciaux
-- Missions trop orientées "maintenance legacy" sans modernisation
-- Petites structures sans infra cloud
+- Postes purement commerciaux / vente sans dimension scientifique
+- Télévente, support pur
+- Missions sans lien avec la pharmacie / santé / sciences de la vie
 """
 
 def trier_offres_ia(offres):
@@ -70,14 +62,14 @@ def trier_offres_ia(offres):
         
         TACHE:
         Pour chaque offre, attribue un score de pertinence de 0 à 100 :
-        - 90-100 : parfaitement aligné (DevOps/SRE/Cloud en Asie, grande entreprise)
-        - 70-89  : très pertinent (bon match technique même si pas 100% DevOps)
-        - 50-69  : intéressant (Data Engineer, IT Finance avec infra cloud)
-        - 30-49  : peu pertinent (trop fonctionnel, mauvais match technique)
-        - 0-29   : hors sujet (support, commercial, pas tech)
-        
+        - 90-100 : parfaitement aligné (affaires réglementaires/recherche clinique/pharmacovigilance à Barcelone)
+        - 70-89  : très pertinent (R&D pharma, affaires médicales, qualité GMP en pharma/biotech)
+        - 50-69  : intéressant (sciences de la vie, labo, qualité, lien santé valorisant le doctorat)
+        - 30-49  : peu pertinent (santé mais peu scientifique, ou hors pharma)
+        - 0-29   : hors sujet (commercial pur, support, sans lien avec la pharmacie/santé)
+
         Retourne UNIQUEMENT un tableau JSON d'objets avec "id" (int), "score" (int 0-100), "raison" (string courte max 15 mots).
-        Exemple: [{{"id": 0, "score": 85, "raison": "SRE Kubernetes chez Société Générale, parfait match"}}, ...]
+        Exemple: [{{"id": 0, "score": 88, "raison": "Affaires réglementaires chez Novartis Barcelone, parfait match PharmD"}}, ...]
         
         IMPORTANT: Ne mets PAS de markdown autour. Juste le JSON brut.
         

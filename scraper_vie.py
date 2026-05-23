@@ -26,85 +26,71 @@ DB_FILE = 'offres_vie.db'
 
 CRITERES = {
     'keywords': [
-        # ===== DEVOPS / SRE / PLATFORM =====
-        'devops', 'dev ops', 'sre', 'site reliability',
-        'platform engineer', 'ingénieur plateforme',
-        'infrastructure engineer', 'ingénieur infrastructure',
-        'cloud engineer', 'ingénieur cloud',
-        'ci/cd', 'cicd', 'continuous integration', 'continuous delivery',
-        'kubernetes', 'docker', 'terraform', 'ansible', 'helm',
-        'argocd', 'fluxcd', 'gitops', 'jenkins', 'gitlab ci',
-        'github actions', 'container', 'containerisation',
-        
-        # ===== CLOUD =====
-        'cloud', 'aws', 'azure', 'gcp', 'google cloud',
-        'cloud computing', 'cloud native', 'microservices',
-        'serverless', 'lambda', 'iaas', 'paas',
-        
-        # ===== MONITORING / OBSERVABILITÉ =====
-        'monitoring', 'observability', 'observabilité',
-        'prometheus', 'grafana', 'datadog', 'elk', 'splunk',
-        'logging', 'alerting', 'nagios', 'zabbix',
-        
-        # ===== DATA ENGINEERING =====
-        'data engineer', 'ingénieur data', 'ingénieur données',
-        'data scientist', 'data analyst', 'data architect',
-        'data platform', 'data pipeline', 'data warehouse', 'data lake',
-        'etl', 'elt', 'mlops', 'machine learning', 'big data',
-        'spark', 'kafka', 'airflow', 'dbt',
-        
-        # ===== DÉVELOPPEMENT / INGÉNIERIE =====
-        'developer', 'développeur', 'developpeur',
-        'engineer', 'ingénieur', 'ingenieur',
-        'software engineer', 'ingénieur logiciel',
-        'backend', 'back-end', 'fullstack', 'full stack', 'full-stack',
-        'python', 'golang', 'java', 'sql', 'typescript',
-        
-        # ===== ARCHITECTURE =====
-        'architect', 'architecte', 'solution architect',
-        'cloud architect', 'architecte cloud',
-        'technical architect', 'architecte technique',
-        
-        # ===== SYSTÈMES & RÉSEAU =====
-        'systems engineer', 'ingénieur système', 'ingénieur systèmes',
-        'system administrator', 'administrateur système',
-        'linux', 'unix', 'network engineer', 'ingénieur réseau',
-        'automation', 'automatisation', 'infrastructure',
-        'réseau', 'network', 'virtualisation', 'vmware',
-        
-        # ===== SÉCURITÉ =====
-        'cybersecurity', 'cybersécurité', 'security engineer',
-        'devsecops', 'soc', 'pentester', 'sécurité informatique',
-        'information security', 'sécurité des systèmes',
-        
-        # ===== IT / TECH GENERAL (ciblé) =====
-        'informatique', 'software', 'logiciel',
-        'tech lead', 'technical lead', 'lead technique',
-        'scrum master', 'agile',
-        
-        # ===== FINANCE IT (ciblé) =====
-        'it finance', 'finance it', 'quant developer',
-        'trading system', 'market data',
-        'murex', 'calypso', 'bloomberg',
-        'fintech', 'quantitative',
+        # ===== PHARMA / MÉDICAMENT =====
+        'pharmacie', 'pharmaceutique', 'pharmaceutical', 'pharma',
+        'pharmacien', 'pharmacist', 'pharmacienne',
+        'médicament', 'medicament', 'drug', 'galénique', 'galenique',
+        'formulation', 'galenic', 'bioproduction', 'bioprocess',
+        'fill & finish', 'fill and finish',
+
+        # ===== AFFAIRES RÉGLEMENTAIRES =====
+        'affaires réglementaires', 'affaires reglementaires',
+        'regulatory affairs', 'regulatory', 'réglementaire', 'reglementaire',
+        'amm', 'ctd', 'regulatory submission',
+
+        # ===== PHARMACOVIGILANCE / SÉCURITÉ =====
+        'pharmacovigilance', 'drug safety', 'safety officer',
+
+        # ===== RECHERCHE CLINIQUE =====
+        'recherche clinique', 'clinical research', 'clinical trial',
+        'clinical trials', 'essais cliniques', 'essai clinique',
+        'cra', 'clinical research associate', 'study coordinator',
+        'data manager', 'biostatistique', 'biostatistics', 'clinical operations',
+
+        # ===== R&D / SCIENCES =====
+        'r&d', 'recherche et développement', 'recherche et developpement',
+        'drug development', 'développement pharmaceutique',
+        'preclinique', 'préclinique', 'preclinical',
+        'toxicologie', 'toxicology', 'pharmacologie', 'pharmacology',
+        'chimie', 'chemistry', 'chimie analytique', 'analytical',
+        'biologie', 'biology', 'microbiologie', 'microbiology',
+        'biochimie', 'biochemistry', 'biotech', 'biotechnologie',
+        'biotechnology', 'sciences de la vie', 'life sciences',
+        'life science', 'laboratoire', 'laboratory', 'scientist', 'scientifique',
+
+        # ===== QUALITÉ / PRODUCTION =====
+        'assurance qualité', 'assurance qualite', 'quality assurance',
+        'contrôle qualité', 'controle qualite', 'quality control',
+        'qa', 'qc', 'gmp', 'bpf', 'validation', 'qualification',
+        'affaires qualité', 'affaires qualite',
+        'production pharmaceutique', 'manufacturing',
+
+        # ===== AFFAIRES MÉDICALES / MARKET ACCESS =====
+        'affaires médicales', 'affaires medicales', 'medical affairs',
+        'msl', 'medical science liaison', 'market access',
+        'accès au marché', 'acces au marche', 'heor',
+        'pharmacoéconomie', 'pharmacoeconomie', 'health economics',
+        'medical writer', 'rédaction médicale', 'redaction medicale',
+
+        # ===== DISPOSITIFS / DIAGNOSTIC / COSMÉTIQUE =====
+        'dispositifs médicaux', 'dispositifs medicaux', 'medical device',
+        'medical devices', 'diagnostic', 'ivd',
+        'cosmétique', 'cosmetique', 'cosmetics', 'dermo-cosmétique',
+        'nutraceutique', 'nutraceutical', 'vaccin', 'vaccine',
+        'santé', 'sante', 'healthcare',
+
+        # ===== TERMES ESPAGNOLS (bonus) =====
+        'farmacéutico', 'farmaceutico', 'farmacia',
+        'ensayos clínicos', 'ensayos clinicos', 'calidad',
+        'regulatorio', 'laboratorio', 'investigación', 'investigacion',
+        'biotecnología', 'biotecnologia',
     ]
 }
 
-# Pays / villes Asie pour le filtre géographique
-PAYS_ASIE = [
-    'japon', 'japan', 'tokyo', 'osaka',
-    'singapour', 'singapore',
-    'corée', 'coree', 'korea', 'séoul', 'seoul',
-    'chine', 'china', 'shanghai', 'pékin', 'pekin', 'beijing', 'shenzhen', 'hong kong', 'hongkong',
-    'taïwan', 'taiwan', 'taipei',
-    'thaïlande', 'thailande', 'thailand', 'bangkok',
-    'vietnam', 'viêt nam', 'hô chi minh', 'ho chi minh', 'hanoi', 'hanoï',
-    'malaisie', 'malaysia', 'kuala lumpur',
-    'indonésie', 'indonesie', 'indonesia', 'jakarta',
-    'philippines', 'manille', 'manila',
-    'inde', 'india', 'mumbai', 'new delhi', 'bangalore', 'bengaluru',
-    'cambodge', 'cambodia', 'phnom penh',
-    'myanmar', 'birmanie',
+# Barcelone (ville + aire métropolitaine où se trouvent les sièges pharma)
+ZONE_BARCELONE = [
+    'barcelone', 'barcelona',
+    'sant cugat', "l'hospitalet", 'hospitalet', 'badalona', 'cornellà', 'cornella',
 ]
 
 
@@ -114,9 +100,9 @@ def _env(name, default):
 
 
 EMAIL_CONFIG = {
-    'from': _env('EMAIL_FROM', 'lpennarguear@gmail.com'),
-    'sender_name': _env('EMAIL_SENDER_NAME', 'Scraper VIE'),
-    'to': _env('EMAIL_TO', 'lpennarguear@gmail.com'),
+    'from': _env('EMAIL_FROM', 'shield@hello-pomelo.com'),
+    'sender_name': _env('EMAIL_SENDER_NAME', 'Alertes VIE Pharma Barcelone'),
+    'to': _env('EMAIL_TO', 'shield@hello-pomelo.com'),
     'password': os.getenv('EMAIL_PASSWORD', ''),
     'smtp_server': _env('SMTP_SERVER', 'smtp.gmail.com'),
     'smtp_port': int(_env('SMTP_PORT', '587'))
@@ -213,8 +199,10 @@ def scraper_offres_vie():
         headless = os.getenv('HEADLESS', 'true').lower() not in {'0', 'false', 'no'}
         browser = p.chromium.launch(headless=headless)
         page = browser.new_page()
-        # page.goto('https://mon-vie-via.businessfrance.fr/offres/recherche?latest=true', timeout=60000)
-        page.goto('https://mon-vie-via.businessfrance.fr/offres/recherche?query&specializationsIds=212&specializationsIds=24&missionsTypesIds=VIE&teletravail=0&porteEnv=0', timeout=60000)
+        # NB: pas de specializationsIds (filtrage catégorie côté serveur) — on
+        # récupère toutes les offres VIE puis on filtre par mots-clés + région.
+        # Les anciens IDs 212/24 ciblaient l'IT et excluaient le pharma.
+        page.goto('https://mon-vie-via.businessfrance.fr/offres/recherche?missionsTypesIds=VIE', timeout=60000)
         time.sleep(5)
         
         # Fermer popup cookies
@@ -322,18 +310,18 @@ def filtrer_offres(offres):
     
     for offre in offres:
         lieu_lower = offre['lieu'].lower()
-        est_en_asie = any(pays in lieu_lower for pays in PAYS_ASIE)
+        est_a_barcelone = any(ville in lieu_lower for ville in ZONE_BARCELONE)
         # Match sur le titre ET le contenu de la mission
         texte_complet = offre['titre'] + ' ' + offre.get('mission', '')
         match_keyword = _match_keywords(texte_complet, CRITERES['keywords'])
-        
-        if match_keyword and est_en_asie:
+
+        if match_keyword and est_a_barcelone:
             filtrees.append(offre)
             print(f"✅ {offre['titre'][:50]} | {offre['entreprise'][:25]} | 📍 {offre['lieu']}")
         elif match_keyword:
-            print(f"⏭️ [hors Asie] {offre['titre'][:50]} | 📍 {offre['lieu']}")
-    
-    print(f"\n📊 {len(filtrees)} matchent (Asie uniquement)\n")
+            print(f"⏭️ [hors Barcelone] {offre['titre'][:50]} | 📍 {offre['lieu']}")
+
+    print(f"\n📊 {len(filtrees)} matchent (Barcelone uniquement)\n")
     return filtrees
 
 
